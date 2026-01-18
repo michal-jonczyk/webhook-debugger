@@ -74,12 +74,6 @@ Webhook Debugger is a developer tool that simplifies webhook testing and debuggi
 
 
 
-\*\*Timeline:\*\* 8-10 days
-
-\*\*Progress:\*\* Day 1 - Project setup ✅
-
-
-
 \## 📋 Roadmap
 
 
