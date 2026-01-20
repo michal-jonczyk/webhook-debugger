@@ -1,5 +1,5 @@
 from typing import Dict,Optional,List
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class EndpointStore:
@@ -12,7 +12,7 @@ class EndpointStore:
         endpoint_data: Dict = {
                 "id": endpoint_id,
                 "name": name,
-                "created_at": datetime.now(),
+                "created_at": datetime.now(timezone.utc),
                 "request_count": 0,
                 "requests": []
         }

@@ -4,8 +4,8 @@ import uuid
 from fastapi import HTTPException
 import json
 
-from models import EndpointCreate, EndpointResponse
-from storage import endpoint_store
+from schemas.endpoint import EndpointCreate, EndpointResponse
+from storage.store import endpoint_store
 
 app = FastAPI(
     title="Webhook Debugger",
