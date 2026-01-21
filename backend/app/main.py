@@ -1,10 +1,11 @@
 from fastapi import FastAPI,Request
 from datetime import datetime
-import uuid
 from fastapi import HTTPException
 import json
+import uuid
 
 from schemas.endpoint import EndpointCreate, EndpointResponse
+from services.endpoint_service import endpoint_service
 from storage.store import endpoint_store
 
 app = FastAPI(
@@ -40,39 +41,19 @@ async def health_check():
 
 @app.post("/endpoints",response_model=EndpointResponse,summary="Create Endpoint")
 async def create_endpoint(endpoint: EndpointCreate):
-    endpoint_id = str(uuid.uuid4())
+    endpoint_data = endpoint_service.create_endpoint(name=endpoint.name)
 
-    endpoint_data = endpoint_store.create(
-        endpoint_id=endpoint_id,
-        name=endpoint.name
-    )
-
-    webhook_url = f"http://localhost:8000/w/{endpoint_id}"
-
-    return EndpointResponse(
-        id = endpoint_data["id"],
-        url = webhook_url,
-        name = endpoint_data["name"],
-        created_at = endpoint_data["created_at"]
-    )
+    return EndpointResponse(**endpoint_data)
 
 
 @app.get("/endpoints/{endpoint_id}", response_model=EndpointResponse,summary="Get Endpoint Details")
 async def get_endpoint(endpoint_id: str):
-    endpoint_data = endpoint_store.get(endpoint_id)
+    endpoint_data = endpoint_service.get_endpoint(endpoint_id)
 
     if not endpoint_data:
         raise HTTPException(status_code=404, detail="Endpoint not found")
 
-    webhook_url = f"http://localhost:8000/w/{endpoint_id}"
-
-    return EndpointResponse(
-        id=endpoint_data["id"],
-        url=webhook_url,
-        name=endpoint_data["name"],
-        created_at=endpoint_data["created_at"]
-    )
-
+    return EndpointResponse(**endpoint_data)
 
 @app.api_route("/w/{endpoint_id}", methods=["GET", "POST", "PATCH", "PUT", "DELETE"],summary="Receive Webhook")
 async def receive_webhook(endpoint_id: str, request: Request):
@@ -115,7 +96,7 @@ async def receive_webhook(endpoint_id: str, request: Request):
         "total_requests": endpoint_data["request_count"] + 1
     }
 
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+
