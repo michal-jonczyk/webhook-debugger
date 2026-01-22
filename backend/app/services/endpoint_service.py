@@ -48,7 +48,7 @@ class EndpointService:
         }
 
 
-    async def recive_webhook(
+    async def receive_webhook(
             self,
             endpoint_id: str,
             request: Request,
@@ -84,7 +84,7 @@ class EndpointService:
             "query_params": dict(request.query_params)
         }
 
-        self.store.add(endpoint_id, webhook_data)
+        self.store.add_request(endpoint_id, webhook_data)
 
         return {
             "status": "received",
