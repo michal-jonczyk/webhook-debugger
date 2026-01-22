@@ -91,7 +91,7 @@ class EndpointService:
             "endpoint_id": endpoint_id,
             "request_id": request_id,
             "received_at": datetime.now().isoformat(),
-            "total_requests": endpoint_data["request_count"] + 1
+            "total_requests": endpoint_data["request_count"]
         }
 
 
