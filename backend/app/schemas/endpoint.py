@@ -3,13 +3,13 @@ from datetime import datetime
 from typing import Optional,Dict,Any
 
 class EndpointCreate(BaseModel):
-    name: str = None
+    name: Optional[str] = None
 
 
 class EndpointResponse(BaseModel):
     id: str
     url: str
-    name: str = None
+    name: Optional[str] = None
     created_at: datetime
 
 
