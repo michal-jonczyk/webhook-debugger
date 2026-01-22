@@ -3,22 +3,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
 from api.routes import endpoints, webhooks
+from core.config import settings
 
 app = FastAPI(
-    title="Webhook Debugger",
+    title=settings.APP_NAME,
     description="Test webhooks in real-time with AI-generated mock responses",
-    version="0.1.0",
+    version=settings.APP_VERSION,
     docs_url="/docs",
     redoc_url="/redoc",
 )
 
 
-allowed_origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-]
+allowed_origins = settings.get_allowed_origins()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
