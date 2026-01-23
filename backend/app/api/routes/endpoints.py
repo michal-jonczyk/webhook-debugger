@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from schemas.endpoint import EndpointCreate,EndpointResponse
+from schemas.endpoint import EndpointCreate, EndpointResponse
 from services.endpoint_service import endpoint_service
 
 router = APIRouter(
@@ -7,13 +7,13 @@ router = APIRouter(
     tags=["endpoints"]
 )
 
+
 @router.post(
     "",
     response_model=EndpointResponse,
     summary="Create Webhook Endpoint",
     status_code=201
 )
-
 async def create_endpoint(endpoint: EndpointCreate):
     endpoint_data = endpoint_service.create_endpoint(name=endpoint.name)
     return EndpointResponse(**endpoint_data)
@@ -31,3 +31,22 @@ async def get_endpoint(endpoint_id: str):
         raise HTTPException(status_code=404, detail="Endpoint not found")
 
     return EndpointResponse(**endpoint_data)
+
+
+@router.get(
+    "/{endpoint_id}/requests",
+    summary="Get Endpoint Requests"
+)
+async def get_endpoint_requests(endpoint_id: str):
+    endpoint_data = endpoint_service.get_endpoint(endpoint_id)
+
+    if not endpoint_data:
+        raise HTTPException(status_code=404, detail="Endpoint not found")
+
+    store_data = endpoint_service.store.get(endpoint_id)
+
+    return {
+        "endpoint_id": endpoint_id,
+        "request_count": store_data["request_count"],
+        "requests": store_data["requests"]
+    }
