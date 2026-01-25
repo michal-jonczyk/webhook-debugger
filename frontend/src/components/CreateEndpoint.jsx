@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 function CreateEndpoint() {
     const [endpointName, setEndpointName] = useState('')
     const [createdEndpoint, setCreatedEndpoint] = useState(null)
@@ -12,7 +14,8 @@ function CreateEndpoint() {
     useEffect(() => {
         if (!createdEndpoint) return
 
-        const ws = new WebSocket(`ws://localhost:8000/ws/${createdEndpoint.id}`)
+        const wsUrl = API_URL.replace('https://', 'wss://').replace('http://', 'ws://')
+        const ws = new WebSocket(`${wsUrl}/ws/${createdEndpoint.id}`)
         wsRef.current = ws
 
         ws.onopen = () => {
@@ -49,7 +52,7 @@ function CreateEndpoint() {
 
     const handleCreate = async () => {
         try {
-            const response = await fetch('http://localhost:8000/endpoints', {
+            const response = await fetch(`${API_URL}/endpoints`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,7 +70,7 @@ function CreateEndpoint() {
 
     const loadRequests = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/endpoints/${createdEndpoint.id}/requests`)
+            const response = await fetch(`${API_URL}/endpoints/${createdEndpoint.id}/requests`)
             const data = await response.json()
             console.log('📦 Backend response:', data)
             setRequests(data.requests || [])
@@ -204,7 +207,6 @@ function CreateEndpoint() {
                                         key={req.id || index}
                                         className="border-2 border-gray-200 rounded-lg p-5 hover:border-blue-300 transition-colors animate-fadeIn"
                                     >
-                                        {/* Header */}
                                         <div className="flex items-center justify-between mb-4">
                                             <div className="flex items-center gap-3">
                                                 <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
@@ -221,7 +223,6 @@ function CreateEndpoint() {
                                             </span>
                                         </div>
 
-                                        {/* AI Mock Response */}
                                         {req.ai_mock_response && !req.ai_mock_response.error && (
                                             <div className="mb-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-4">
                                                 <div className="flex items-center justify-between mb-2">
@@ -243,7 +244,6 @@ function CreateEndpoint() {
                                             </div>
                                         )}
 
-                                        {/* Rate Limit Warning */}
                                         {req.ai_mock_response?.rate_limited && (
                                             <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
                                                 <div className="flex items-center gap-2 text-yellow-800">
@@ -256,7 +256,6 @@ function CreateEndpoint() {
                                             </div>
                                         )}
 
-                                        {/* Request Body */}
                                         <div className="mb-3">
                                             <p className="text-sm font-semibold text-gray-700 mb-2">Request Body:</p>
                                             <pre className="bg-gray-50 p-3 rounded border border-gray-200 text-xs overflow-x-auto">
@@ -264,7 +263,6 @@ function CreateEndpoint() {
                                             </pre>
                                         </div>
 
-                                        {/* Headers */}
                                         <details className="cursor-pointer">
                                             <summary className="text-sm font-semibold text-gray-700 hover:text-gray-900">
                                                 📋 Headers (click to expand)
