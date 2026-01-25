@@ -282,5 +282,4 @@ function CreateEndpoint() {
     )
 }
 
-export default CreateEndpoint/ /   f o r c e   r e b u i l d  
- 
+export default CreateEndpoint
