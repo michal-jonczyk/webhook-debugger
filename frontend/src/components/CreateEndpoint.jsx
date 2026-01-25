@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_URL = 'https://webhook-debugger-production-48ab.up.railway.app'
 
 function CreateEndpoint() {
     const [endpointName, setEndpointName] = useState('')
@@ -282,4 +282,5 @@ function CreateEndpoint() {
     )
 }
 
-export default CreateEndpoint
+export default CreateEndpoint/ /   f o r c e   r e b u i l d  
+ 
